@@ -8,16 +8,15 @@ const app = express();
 app.use(express.json({ limit: "20mb" }));
 
 // Health check
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
   res.json({ ok: true });
 });
 
-// FIR PDF generator
+// FIR PDF generation
 app.post("/generate-fir-pdf", async (req, res) => {
   try {
     const data = req.body;
 
-    // Load template & CSS
     const templateHtml = fs.readFileSync(
       path.join(process.cwd(), "fir-template.html"),
       "utf8"
@@ -28,11 +27,9 @@ app.post("/generate-fir-pdf", async (req, res) => {
       "utf8"
     );
 
-    // Compile HTML
     const template = handlebars.compile(templateHtml);
     const html = template({ data, css });
 
-    // Launch Puppeteer
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"]
@@ -68,7 +65,6 @@ app.post("/generate-fir-pdf", async (req, res) => {
   }
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`FIR PDF service running on port ${PORT}`);
