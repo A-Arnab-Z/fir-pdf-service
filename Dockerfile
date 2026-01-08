@@ -1,12 +1,12 @@
-FROM node:20-slim
+FROM node:22-slim
 
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm install --omit=dev
 
 COPY . .
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
