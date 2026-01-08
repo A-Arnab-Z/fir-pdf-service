@@ -1,110 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>FINAL INSPECTION REPORT</title>
+<meta charset="utf-8" />
+<style>
+@page { size: A4 landscape; margin: 12mm; }
+body { font-family: Arial, sans-serif; font-size: 9px; }
+
+.outer { border: 3px solid #000; padding: 3px; }
+.inner { border: 1px solid #000; padding: 4px; }
+
+table { width: 100%; border-collapse: collapse; }
+td, th { border: 1px solid #000; padding: 3px; vertical-align: top; }
+
+.center { text-align: center; }
+.bold { font-weight: bold; }
+.small { font-size: 8px; }
+
+.logo { width: 55px; }
+.header-title { font-size: 15px; font-weight: bold; text-align: center; }
+.header-sub { font-size: 9px; text-align: center; }
+</style>
 </head>
 
 <body>
-<div class="page">
+<div class="outer">
+<div class="inner">
 
-  <!-- ================= HEADER ================= -->
-  <table class="header">
-    <tr>
-      <td class="logo">SKSL</td>
-      <td class="company">
-        <div class="name">S. K. SAMANTA & CO. (P) LTD.</div>
-        <div class="address">Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</div>
-      </td>
-      <td class="report-title">FINAL INSPECTION REPORT</td>
-    </tr>
-  </table>
+<!-- HEADER -->
+<table>
+<tr>
+<td style="width:8%" class="center">
+<img class="logo" src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+</td>
+<td style="width:72%">
+<div class="header-title">S. K. SAMANTA & CO. (P) LTD.</div>
+<div class="header-sub">Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</div>
+</td>
+<td style="width:20%" class="center bold">FINAL INSPECTION REPORT</td>
+</tr>
+</table>
 
-  <!-- ================= META ================= -->
-  <table class="meta">
-    <tr>
-      <td><b>Client</b></td><td>{{clientName}}</td>
-      <td><b>FIR No</b></td><td>{{firNumber}}</td>
-    </tr>
-    <tr>
-      <td><b>Vendor</b></td><td>{{vendorName}}</td>
-      <td><b>PO No</b></td><td>{{poNumber}}</td>
-    </tr>
-    <tr>
-      <td><b>Sub Vendor</b></td><td>{{subVendor}}</td>
-      <td><b>ITP No</b></td><td>{{itpNumber}}</td>
-    </tr>
-    <tr>
-      <td><b>Date of Inspection</b></td><td>{{inspectionDate}}</td>
-      <td><b>Job No</b></td><td>{{jobNumber}}</td>
-    </tr>
-  </table>
+<!-- INFO -->
+<table>
+<tr><td class="bold">CLIENT</td><td>{{CLIENT_NAME}}</td><td class="bold">FIR No.</td><td>{{FIR_NO}}</td></tr>
+<tr><td class="bold">VENDOR</td><td>{{VENDOR_NAME}}</td><td class="bold">PO No.</td><td>{{PO_NO}}</td></tr>
+<tr><td class="bold">SUB-VENDOR</td><td></td><td class="bold">ITP No.</td><td>{{ITP_NO}}</td></tr>
+<tr><td class="bold">DATE OF INSPECTION</td><td>{{DATE_OF_INSPECTION}}</td><td class="bold">PROJECT</td><td>{{PROJECT_NAME}}</td></tr>
+</table>
 
-  <!-- ================= MAIN BODY ================= -->
-  <table class="main">
-    <tr>
-      <!-- ITEMS -->
-      <td class="items">
-        <table>
-          <tr>
-            <th>Sl</th>
-            <th>Item Description<br/><small>Drg No / Spec</small></th>
-            <th>Offered</th>
-            <th>Accepted</th>
-            <th>Rejected</th>
-          </tr>
+<!-- MAIN TABLE -->
+<table>
+<tr class="bold center">
+<td style="width:3%">Sl</td>
+<td style="width:28%">ITEM DESCRIPTION<br/><span class="small">Drg No./Spec</span></td>
+<td style="width:6%">Offered</td>
+<td style="width:6%">Accepted</td>
+<td style="width:6%">Rejected</td>
+<td style="width:8%">Inspection Tests</td>
+<td style="width:43%">OBSERVATIONS</td>
+</tr>
 
-          {{#items}}
-          <tr>
-            <td>{{sl}}</td>
-            <td>{{description}}</td>
-            <td>{{qtyOffered}}</td>
-            <td>{{qtyAccepted}}</td>
-            <td>{{qtyRejected}}</td>
-          </tr>
-          {{/items}}
+{{ITEM_ROWS}}
 
-        </table>
-      </td>
+</table>
 
-      <!-- TESTS -->
-      <td class="tests">
-        <table>
-          <tr>
-            <th>Inspection / Tests Conducted</th>
-            <th>Observations</th>
-          </tr>
+<!-- FOOTER -->
+<table>
+<tr>
+<td style="width:60%" class="small">
+SKSL Approved Drg. No.:<br/>
+{{DRAWING_REFS}}
+</td>
+<td style="width:20%" class="center bold">
+Remarks: {{FINAL_RESULT}}
+</td>
+<td style="width:20%" class="center">
+<b>{{INSPECTOR_NAME}}</b><br/>
+Inspection Engineer
+</td>
+</tr>
+<tr>
+<td colspan="3" class="center small">VENDOR / SUB-VENDOR</td>
+</tr>
+</table>
 
-          {{#tests}}
-          <tr>
-            <td>{{test}}</td>
-            <td>{{observation}}</td>
-          </tr>
-          {{/tests}}
-
-        </table>
-      </td>
-    </tr>
-  </table>
-
-  <!-- ================= FOOTER ================= -->
-  <table class="footer">
-    <tr>
-      <td class="references">
-        <b>References:</b><br/>
-        {{references}}
-      </td>
-      <td class="result">
-        <b>Final Result:</b><br/>
-        {{finalResult}}
-      </td>
-      <td class="signature">
-        {{inspectorName}}<br/>
-        <small>{{inspectorDesignation}}</small>
-      </td>
-    </tr>
-  </table>
-
+</div>
 </div>
 </body>
 </html>
