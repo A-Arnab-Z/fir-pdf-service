@@ -1,121 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
   <title>FINAL INSPECTION REPORT</title>
-  <link rel="stylesheet" href="../styles/fir.css" />
 </head>
 
 <body>
+<div class="page">
 
-<!-- ================= HEADER ================= -->
-<table class="header">
-  <tr>
-    <td class="logo">
-      <img src="{{LOGO_BASE64}}" />
-    </td>
-    <td class="company">
-      <div class="company-name">S. K. SAMANTA & CO. (P) LTD.</div>
-      <div class="company-address">
-        Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata – 700020
-      </div>
-    </td>
-    <td class="title">
-      FINAL INSPECTION REPORT
-    </td>
-  </tr>
-</table>
+  <!-- ================= HEADER ================= -->
+  <table class="header">
+    <tr>
+      <td class="logo">SKSL</td>
+      <td class="company">
+        <div class="name">S. K. SAMANTA & CO. (P) LTD.</div>
+        <div class="address">Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</div>
+      </td>
+      <td class="report-title">FINAL INSPECTION REPORT</td>
+    </tr>
+  </table>
 
-<!-- ================= META DETAILS ================= -->
-<table class="meta">
-  <tr>
-    <td><strong>Client</strong></td><td>{{clientName}}</td>
-    <td><strong>FIR No</strong></td><td>{{firNumber}}</td>
-  </tr>
-  <tr>
-    <td><strong>Vendor</strong></td><td>{{vendorName}}</td>
-    <td><strong>PO No</strong></td><td>{{poNumber}}</td>
-  </tr>
-  <tr>
-    <td><strong>Sub Vendor</strong></td><td>{{subVendor}}</td>
-    <td><strong>ITP No</strong></td><td>{{itpNumber}}</td>
-  </tr>
-  <tr>
-    <td><strong>Date of Inspection</strong></td><td>{{inspectionDate}}</td>
-    <td><strong>Job No</strong></td><td>{{jobNumber}}</td>
-  </tr>
-</table>
+  <!-- ================= META ================= -->
+  <table class="meta">
+    <tr>
+      <td><b>Client</b></td><td>{{clientName}}</td>
+      <td><b>FIR No</b></td><td>{{firNumber}}</td>
+    </tr>
+    <tr>
+      <td><b>Vendor</b></td><td>{{vendorName}}</td>
+      <td><b>PO No</b></td><td>{{poNumber}}</td>
+    </tr>
+    <tr>
+      <td><b>Sub Vendor</b></td><td>{{subVendor}}</td>
+      <td><b>ITP No</b></td><td>{{itpNumber}}</td>
+    </tr>
+    <tr>
+      <td><b>Date of Inspection</b></td><td>{{inspectionDate}}</td>
+      <td><b>Job No</b></td><td>{{jobNumber}}</td>
+    </tr>
+  </table>
 
-<!-- ================= MAIN CONTENT ================= -->
-<table class="content">
-<tr>
+  <!-- ================= MAIN BODY ================= -->
+  <table class="main">
+    <tr>
+      <!-- ITEMS -->
+      <td class="items">
+        <table>
+          <tr>
+            <th>Sl</th>
+            <th>Item Description<br/><small>Drg No / Spec</small></th>
+            <th>Offered</th>
+            <th>Accepted</th>
+            <th>Rejected</th>
+          </tr>
 
-<!-- LEFT TABLE -->
-<td class="left">
+          {{#items}}
+          <tr>
+            <td>{{sl}}</td>
+            <td>{{description}}</td>
+            <td>{{qtyOffered}}</td>
+            <td>{{qtyAccepted}}</td>
+            <td>{{qtyRejected}}</td>
+          </tr>
+          {{/items}}
 
-<table class="items">
-  <tr>
-    <th>Sl No</th>
-    <th>Item Description<br><span>Drg No / Spec</span></th>
-    <th>Offered</th>
-    <th>Accepted</th>
-    <th>Rejected</th>
-  </tr>
+        </table>
+      </td>
 
-  {{#items}}
-  <tr>
-    <td>{{sl}}</td>
-    <td>{{description}}</td>
-    <td>{{offered}}</td>
-    <td>{{accepted}}</td>
-    <td>{{rejected}}</td>
-  </tr>
-  {{/items}}
+      <!-- TESTS -->
+      <td class="tests">
+        <table>
+          <tr>
+            <th>Inspection / Tests Conducted</th>
+            <th>Observations</th>
+          </tr>
 
-</table>
+          {{#tests}}
+          <tr>
+            <td>{{test}}</td>
+            <td>{{observation}}</td>
+          </tr>
+          {{/tests}}
 
-</td>
+        </table>
+      </td>
+    </tr>
+  </table>
 
-<!-- RIGHT TABLE -->
-<td class="right">
+  <!-- ================= FOOTER ================= -->
+  <table class="footer">
+    <tr>
+      <td class="references">
+        <b>References:</b><br/>
+        {{references}}
+      </td>
+      <td class="result">
+        <b>Final Result:</b><br/>
+        {{finalResult}}
+      </td>
+      <td class="signature">
+        {{inspectorName}}<br/>
+        <small>{{inspectorDesignation}}</small>
+      </td>
+    </tr>
+  </table>
 
-<table class="tests">
-  <tr>
-    <th>Inspection / Tests Conducted</th>
-    <th>Observations</th>
-  </tr>
-
-  {{#tests}}
-  <tr>
-    <td>{{test}}</td>
-    <td>{{observation}}</td>
-  </tr>
-  {{/tests}}
-
-</table>
-
-</td>
-</tr>
-</table>
-
-<!-- ================= FOOTER ================= -->
-<table class="footer">
-<tr>
-  <td class="refs">
-    <strong>References:</strong><br/>
-    {{references}}
-  </td>
-  <td class="result">
-    <strong>Final Result:</strong><br/>
-    <span class="accepted">{{finalResult}}</span>
-  </td>
-  <td class="sign">
-    <div class="sign-box"></div>
-    <div class="sign-name">{{inspectorName}}</div>
-    <div class="sign-desg">{{inspectorDesignation}}</div>
-  </td>
-</tr>
-</table>
-
+</div>
 </body>
 </html>
