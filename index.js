@@ -1,135 +1,140 @@
-import express from 'express';
-import puppeteer from 'puppeteer-core';
+import express from "express";
+import fs from "fs";
+import path from "path";
+import puppeteer from "puppeteer-core";
 
 const app = express();
-
-/* Allow large FIR payloads */
-app.use(express.json({ limit: '25mb' }));
+app.use(express.json({ limit: "25mb" }));
 
 const PORT = process.env.PORT || 8080;
-const CHROME_PATH = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium';
 
 /* ===============================
-   HEALTH CHECK (REQUIRED)
-   =============================== */
-app.get('/', (_, res) => {
-  res.status(200).send('FIR PDF Service OK');
+   HEALTH CHECK (Railway needs this)
+================================ */
+app.get("/", (_req, res) => {
+  res.status(200).send("FIR PDF Service OK");
 });
 
 /* ===============================
-   PDF GENERATION ENDPOINT
-   =============================== */
-app.post('/generate-fir-pdf', async (req, res) => {
+   PDF GENERATION
+================================ */
+app.post("/generate-fir-pdf", async (req, res) => {
   let browser;
 
   try {
     const fir = req.body;
-
-    if (!fir || Object.keys(fir).length === 0) {
-      return res.status(400).json({ message: 'Empty FIR payload received' });
+    if (!fir) {
+      return res.status(400).json({ message: "No FIR data received" });
     }
 
+    /* ---------- Load HTML & CSS ---------- */
+    const templatePath = path.join(process.cwd(), "templates", "fir.html");
+    const cssPath = path.join(process.cwd(), "styles", "fir.css");
+
+    let html = fs.readFileSync(templatePath, "utf8");
+    const css = fs.readFileSync(cssPath, "utf8");
+
+    /* ---------- Inject CSS ---------- */
+    html = html.replace("</head>", `<style>${css}</style></head>`);
+
+    /* ---------- Replace Header Fields ---------- */
+    html = html
+      .replace("{{clientName}}", fir.clientName || "")
+      .replace("{{projectName}}", fir.projectName || "")
+      .replace("{{vendorName}}", fir.vendorName || "")
+      .replace("{{subVendor}}", fir.subVendor || "")
+      .replace("{{firNumber}}", fir.firNumber || "")
+      .replace("{{poNumber}}", fir.poNumber || "")
+      .replace("{{itpNumber}}", fir.itpNumber || "")
+      .replace("{{jobNumber}}", fir.jobNumber || "")
+      .replace("{{inspectionDate}}", fir.dateOfInspection || "")
+      .replace("{{finalResult}}", fir.finalResult || "")
+      .replace("{{inspectorName}}", fir.inspectorName || "")
+      .replace("{{inspectorDesignation}}", fir.inspectorDesignation || "")
+      .replace("{{references}}", fir.references || "");
+
+    /* ---------- Items Table ---------- */
+    const itemsHtml = (fir.items || [])
+      .map(
+        (item, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${item.description || ""}</td>
+          <td>${item.qtyOffered || ""}</td>
+          <td>${item.qtyAccepted || ""}</td>
+          <td>${item.qtyRejected || ""}</td>
+        </tr>
+      `
+      )
+      .join("");
+
+    html = html.replace(/{{#items}}[\s\S]*?{{\/items}}/, itemsHtml);
+
+    /* ---------- Tests Table ---------- */
+    const testsHtml = (fir.tests || [])
+      .map(
+        (t) => `
+        <tr>
+          <td>${t.test || ""}</td>
+          <td>${t.observation || ""}</td>
+        </tr>
+      `
+      )
+      .join("");
+
+    html = html.replace(/{{#tests}}[\s\S]*?{{\/tests}}/, testsHtml);
+
+    /* ---------- Launch Puppeteer ---------- */
     browser = await puppeteer.launch({
-      executablePath: CHROME_PATH,
-      headless: true,
+      headless: "new",
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
       args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--single-process'
-      ]
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
     });
 
     const page = await browser.newPage();
-
-    const html = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<title>FINAL INSPECTION REPORT</title>
-<style>
-  body { font-family: Arial, sans-serif; font-size: 11px; margin: 20px; }
-  h1 { text-align: center; }
-  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-  th, td { border: 1px solid #000; padding: 6px; vertical-align: top; }
-  th { background: #f0f0f0; }
-</style>
-</head>
-<body>
-
-<h1>FINAL INSPECTION REPORT</h1>
-
-<p><b>Client:</b> ${fir.clientName || ''}</p>
-<p><b>Project:</b> ${fir.projectName || ''}</p>
-<p><b>Vendor:</b> ${fir.vendorName || ''}</p>
-<p><b>FIR No:</b> ${fir.firNumber || ''}</p>
-<p><b>Date:</b> ${fir.firDate || ''}</p>
-
-<h3>Main Inspection Items</h3>
-<table>
-<tr>
-  <th>Sl</th>
-  <th>Description</th>
-  <th>Offered</th>
-  <th>Accepted</th>
-  <th>Rejected</th>
-</tr>
-${(fir.items || []).map((i, idx) => `
-<tr>
-  <td>${idx + 1}</td>
-  <td>${i.description || ''}</td>
-  <td>${i.qtyOffered || ''}</td>
-  <td>${i.qtyAccepted || ''}</td>
-  <td>${i.qtyRejected || ''}</td>
-</tr>`).join('')}
-</table>
-
-<h3>Inspection / Tests & Observations</h3>
-<table>
-<tr><th>Test</th><th>Observation</th></tr>
-${(fir.tests || []).map(t => `
-<tr>
-  <td>${t.test || ''}</td>
-  <td>${t.observation || ''}</td>
-</tr>`).join('')}
-</table>
-
-<h3>Final Result</h3>
-<p>${fir.finalResult || ''}</p>
-<p>${fir.finalRemarks || ''}</p>
-
-<p><b>Inspector:</b> ${fir.inspectorName || ''}</p>
-
-</body>
-</html>
-`;
-
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
     const pdf = await page.pdf({
-      format: 'A4',
+      format: "A4",
       landscape: true,
-      printBackground: true
+      printBackground: true,
+      margin: {
+        top: "10mm",
+        bottom: "10mm",
+        left: "8mm",
+        right: "8mm",
+      },
     });
 
     await browser.close();
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="FIR.pdf"');
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", 'inline; filename="FIR.pdf"');
     res.send(pdf);
-
   } catch (err) {
-    console.error('PDF ERROR:', err);
-    if (browser) await browser.close().catch(() => {});
-    res.status(500).json({ message: 'PDF generation failed', details: err.message });
+    console.error("PDF ERROR:", err);
+
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (_) {}
+    }
+
+    res.status(500).json({
+      message: "PDF generation failed",
+      details: err.message,
+    });
   }
 });
 
 /* ===============================
-   KEEP CONTAINER ALIVE
-   =============================== */
-app.listen(PORT, '0.0.0.0', () => {
+   KEEP NODE ALIVE
+================================ */
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`FIR PDF service running on port ${PORT}`);
 });
