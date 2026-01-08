@@ -8,26 +8,33 @@ app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 8080;
 
-/* ===============================
-   HEALTH CHECK (DO NOT REMOVE)
-   =============================== */
+/* =====================================================
+   HEALTH CHECK (REQUIRED FOR RAILWAY)
+   ===================================================== */
 app.get('/', (req, res) => {
   res.status(200).send('FIR PDF Service OK');
 });
 
-/* ===============================
+/* =====================================================
    PDF GENERATION ENDPOINT
-   =============================== */
+   ===================================================== */
 app.post('/generate-fir-pdf', async (req, res) => {
   let browser;
 
   try {
     const fir = req.body;
 
-    if (!fir) {
-      return res.status(400).json({ message: 'No FIR data received' });
+    /* Validate input */
+    if (!fir || Object.keys(fir).length === 0) {
+      return res.status(400).json({
+        message: 'No FIR data received'
+      });
     }
 
+    /* Log once for debugging (safe) */
+    console.log('FIR RECEIVED');
+
+    /* Launch Chromium */
     browser = await puppeteer.launch({
       headless: 'new',
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
@@ -41,49 +48,53 @@ app.post('/generate-fir-pdf', async (req, res) => {
 
     const page = await browser.newPage();
 
-    /* ===============================
-       BASIC FIR HTML TEMPLATE
-       (Pixel-perfect layout comes later)
-       =============================== */
+    /* Prevent timeout issues */
+    await page.setDefaultNavigationTimeout(0);
+    await page.setViewport({ width: 1280, height: 900 });
+
+    /* =====================================================
+       BASIC FIR HTML (SAFE PLACEHOLDER)
+       Pixel-perfect layout will replace this later
+       ===================================================== */
     const html = `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>FINAL INSPECTION REPORT</title>
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 12px;
-      margin: 20px;
-    }
+<meta charset="utf-8" />
+<title>FINAL INSPECTION REPORT</title>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    margin: 20px;
+  }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 12px;
+  }
 
-    h3 {
-      margin-top: 20px;
-    }
+  h3 {
+    margin-top: 18px;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
 
-    th, td {
-      border: 1px solid #000;
-      padding: 6px;
-      vertical-align: top;
-    }
+  th, td {
+    border: 1px solid #000;
+    padding: 6px;
+    vertical-align: top;
+  }
 
-    th {
-      background: #f0f0f0;
-      text-align: left;
-    }
-  </style>
+  th {
+    background: #f0f0f0;
+    text-align: left;
+  }
+</style>
 </head>
 <body>
 
@@ -98,36 +109,36 @@ app.post('/generate-fir-pdf', async (req, res) => {
 
 <h3>Main Inspection Items</h3>
 <table>
-  <tr>
-    <th>Sl No</th>
-    <th>Item Description</th>
-    <th>Qty Offered</th>
-    <th>Qty Accepted</th>
-    <th>Qty Rejected</th>
-  </tr>
-  ${(fir.items || []).map((item, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${item.description || ''}</td>
-      <td>${item.qtyOffered || ''}</td>
-      <td>${item.qtyAccepted || ''}</td>
-      <td>${item.qtyRejected || ''}</td>
-    </tr>
-  `).join('')}
+<tr>
+  <th>Sl No</th>
+  <th>Item Description</th>
+  <th>Qty Offered</th>
+  <th>Qty Accepted</th>
+  <th>Qty Rejected</th>
+</tr>
+${(fir.items || []).map((item, i) => `
+<tr>
+  <td>${i + 1}</td>
+  <td>${item.description || ''}</td>
+  <td>${item.qtyOffered || ''}</td>
+  <td>${item.qtyAccepted || ''}</td>
+  <td>${item.qtyRejected || ''}</td>
+</tr>
+`).join('')}
 </table>
 
 <h3>Inspection / Tests Conducted & Observations</h3>
 <table>
-  <tr>
-    <th>Inspection / Test Conducted</th>
-    <th>Observation</th>
-  </tr>
-  ${(fir.tests || []).map(test => `
-    <tr>
-      <td>${test.test || ''}</td>
-      <td>${test.observation || ''}</td>
-    </tr>
-  `).join('')}
+<tr>
+  <th>Inspection / Test Conducted</th>
+  <th>Observation</th>
+</tr>
+${(fir.tests || []).map(t => `
+<tr>
+  <td>${t.test || ''}</td>
+  <td>${t.observation || ''}</td>
+</tr>
+`).join('')}
 </table>
 
 <h3>Final Result</h3>
@@ -170,9 +181,9 @@ app.post('/generate-fir-pdf', async (req, res) => {
   }
 });
 
-/* ===============================
-   KEEP SERVER ALIVE
-   =============================== */
+/* =====================================================
+   KEEP SERVER ALIVE (CRITICAL)
+   ===================================================== */
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`FIR PDF service running on port ${PORT}`);
 });
