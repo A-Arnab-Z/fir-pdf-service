@@ -1,5 +1,5 @@
 import express from 'express';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 
 const app = express();
 app.use(express.json({ limit: '20mb' }));
