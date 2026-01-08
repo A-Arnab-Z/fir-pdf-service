@@ -1,6 +1,5 @@
 FROM node:22-slim
 
-# Install Chromium + required libs
 RUN apt-get update && apt-get install -y \
   chromium \
   fonts-liberation \
@@ -10,7 +9,6 @@ RUN apt-get update && apt-get install -y \
   libxss1 \
   libasound2 \
   libgbm1 \
-  --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
