@@ -6,14 +6,13 @@ app.use(express.json({ limit: '10mb' }));
 
 const PORT = process.env.PORT || 8080;
 
-app.get('/health', (req, res) => {
-  res.send('OK');
+/* Health check (VERY IMPORTANT for Railway) */
+app.get('/', (req, res) => {
+  res.status(200).send('FIR PDF Service OK');
 });
 
 app.post('/generate-fir-pdf', async (req, res) => {
   try {
-    const firData = req.body;
-
     const browser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -21,15 +20,13 @@ app.post('/generate-fir-pdf', async (req, res) => {
 
     const page = await browser.newPage();
 
-    // TEMP placeholder HTML (replace with your real template)
     await page.setContent(`
       <html>
         <body>
-          <h1>FIR PDF Test</h1>
-          <pre>${JSON.stringify(firData, null, 2)}</pre>
+          <h1>FIR PDF TEST</h1>
         </body>
       </html>
-    `, { waitUntil: 'networkidle0' });
+    `);
 
     const pdf = await page.pdf({
       format: 'A4',
@@ -40,7 +37,6 @@ app.post('/generate-fir-pdf', async (req, res) => {
     await browser.close();
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="FIR.pdf"');
     res.send(pdf);
   } catch (err) {
     console.error(err);
@@ -48,6 +44,7 @@ app.post('/generate-fir-pdf', async (req, res) => {
   }
 });
 
+/* THIS LINE IS WHAT KEEPS NODE ALIVE */
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`FIR PDF service running on port ${PORT}`);
 });
