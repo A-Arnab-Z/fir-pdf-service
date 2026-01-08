@@ -1,69 +1,59 @@
-import express from 'express';
-import puppeteer from 'puppeteer-core';
-import fs from 'fs';
-import path from 'path';
+import express from "express";
+import puppeteer from "puppeteer-core";
 
 const app = express();
-app.use(express.json({ limit: '20mb' }));
+app.use(express.json({ limit: "25mb" }));
 
 const PORT = process.env.PORT || 8080;
 
 /* ===============================
-   HEALTH CHECK
-   =============================== */
-app.get('/', (_, res) => {
-  res.send('FIR PDF Service OK');
+   HEALTH CHECK (REQUIRED)
+================================ */
+app.get("/", (_, res) => {
+  res.status(200).send("FIR PDF Service OK");
 });
 
 /* ===============================
    PDF GENERATION
-   =============================== */
-app.post('/generate-fir-pdf', async (req, res) => {
+================================ */
+app.post("/generate-fir-pdf", async (req, res) => {
   let browser;
 
   try {
     const fir = req.body;
-    if (!fir) {
-      return res.status(400).json({ message: 'No FIR data received' });
-    }
+    if (!fir) return res.status(400).json({ message: "No FIR data received" });
 
     browser = await puppeteer.launch({
-      headless: 'new',
+      headless: "new",
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
       args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
+      ],
     });
 
     const page = await browser.newPage();
 
     /* ===============================
-       HTML TEMPLATE (STANDARD FIR)
-       =============================== */
+       FIR STANDARD HTML TEMPLATE
+    ================================ */
     const html = `
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8" />
-<title>FINAL INSPECTION REPORT</title>
-
+<meta charset="UTF-8">
 <style>
   body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
-    margin: 0;
-  }
-
-  .page {
-    padding: 10mm;
+    margin: 20px;
   }
 
   table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
   }
 
   td, th {
@@ -72,151 +62,160 @@ app.post('/generate-fir-pdf', async (req, res) => {
     vertical-align: top;
   }
 
-  .header {
-    border: 2px solid #000;
-    margin-bottom: 4px;
+  .no-border {
+    border: none !important;
   }
 
-  .logo {
-    width: 80px;
-    text-align: center;
-  }
+  .center { text-align: center; }
+  .right { text-align: right; }
+  .bold { font-weight: bold; }
 
-  .logo img {
-    max-width: 70px;
-  }
-
-  .company {
-    text-align: center;
-  }
-
-  .company-name {
-    color: #003399;
+  .title {
     font-size: 14px;
     font-weight: bold;
-  }
-
-  .report-title {
     color: #003399;
+  }
+
+  .subtitle {
+    font-size: 10px;
+  }
+
+  .section-title {
     font-weight: bold;
-    text-align: center;
-    width: 200px;
+    background: #f0f0f0;
   }
 
-  .meta, .footer {
-    border: 2px solid #000;
-    margin-bottom: 4px;
-  }
-
-  .main td {
-    vertical-align: top;
-  }
-
-  .items th, .tests th {
-    background: #f2f2f2;
-  }
-
-  .signature {
-    text-align: center;
-    vertical-align: bottom;
-    height: 60px;
+  img.logo {
+    width: 70px;
   }
 </style>
 </head>
 
 <body>
-<div class="page">
 
-<!-- HEADER -->
-<table class="header">
+<!-- ================= HEADER ================= -->
+<table>
+  <tr>
+    <td class="center no-border" style="width:15%">
+      <img class="logo" src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+    </td>
+    <td class="center no-border" style="width:55%">
+      <div class="title">S. K. SAMANTA & CO. (P) LTD.</div>
+      <div class="subtitle">
+        Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020
+      </div>
+    </td>
+    <td class="center no-border title" style="width:30%">
+      FINAL INSPECTION REPORT
+    </td>
+  </tr>
+</table>
+
+<!-- ================= META ================= -->
+<table>
 <tr>
-  <td class="logo">
-    <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png?updatedAt=1766121272133" />
-  </td>
-  <td class="company">
-    <div class="company-name">S. K. SAMANTA & CO. (P) LTD.</div>
-    Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020
-  </td>
-  <td class="report-title">FINAL INSPECTION REPORT</td>
+  <td class="bold">Client</td><td>${fir.clientName || ""}</td>
+  <td class="bold">FIR No</td><td>${fir.firNumber || ""}</td>
+</tr>
+<tr>
+  <td class="bold">Vendor</td><td>${fir.vendorName || ""}</td>
+  <td class="bold">PO No</td><td>${fir.poNumber || ""}</td>
+</tr>
+<tr>
+  <td class="bold">Sub Vendor</td><td>${fir.subVendor || ""}</td>
+  <td class="bold">ITP No</td><td>${fir.itpNumber || ""}</td>
+</tr>
+<tr>
+  <td class="bold">Date of Inspection</td><td>${fir.dateOfInspection || ""}</td>
+  <td class="bold">Job No</td><td>${fir.jobNumber || ""}</td>
 </tr>
 </table>
 
-<!-- META -->
-<table class="meta">
-<tr><td><b>Client</b></td><td>${fir.clientName || ''}</td><td><b>FIR No</b></td><td>${fir.firNumber || ''}</td></tr>
-<tr><td><b>Vendor</b></td><td>${fir.vendorName || ''}</td><td><b>PO No</b></td><td>${fir.poNumber || ''}</td></tr>
-<tr><td><b>Sub Vendor</b></td><td>${fir.subVendor || ''}</td><td><b>ITP No</b></td><td>${fir.itpNumber || ''}</td></tr>
-<tr><td><b>Date of Inspection</b></td><td>${fir.dateOfInspection || ''}</td><td><b>Job No</b></td><td>${fir.jobNumber || ''}</td></tr>
+<!-- ================= MAIN ITEMS ================= -->
+<table>
+<tr class="section-title center">
+  <td>Sl No</td>
+  <td>Item Description<br/>Drg No / Spec</td>
+  <td>Offered</td>
+  <td>Accepted</td>
+  <td>Rejected</td>
+</tr>
+
+${(fir.items || []).map((item, i) => `
+<tr>
+  <td class="center">${i + 1}</td>
+  <td>${item.description || ""}</td>
+  <td class="center">${item.qtyOffered ?? ""}</td>
+  <td class="center">${item.qtyAccepted ?? ""}</td>
+  <td class="center">${item.qtyRejected ?? ""}</td>
+</tr>
+`).join("")}
+
 </table>
 
-<!-- MAIN -->
-<table class="main">
-<tr>
-<td width="65%">
-<table class="items">
-<tr><th>Sl</th><th>Item Description<br/><small>Drg No / Spec</small></th><th>Offered</th><th>Accepted</th><th>Rejected</th></tr>
-${(fir.items || []).map((i, idx) => `
-<tr>
-<td>${idx + 1}</td>
-<td>${i.description || ''}</td>
-<td>${i.qtyOffered || ''}</td>
-<td>${i.qtyAccepted || ''}</td>
-<td>${i.qtyRejected || ''}</td>
-</tr>`).join('')}
-</table>
-</td>
+<!-- ================= INSPECTION / OBS ================= -->
+<table>
+<tr class="section-title center">
+  <td style="width:35%">Inspection / Tests Conducted</td>
+  <td>Observations</td>
+</tr>
 
-<td width="35%">
-<table class="tests">
-<tr><th>Inspection / Tests Conducted</th><th>Observations</th></tr>
 ${(fir.tests || []).map(t => `
 <tr>
-<td>${t.test}</td>
-<td>${t.observation}</td>
-</tr>`).join('')}
-</table>
-</td>
+  <td>${t.test}</td>
+  <td>${t.observation}</td>
 </tr>
+`).join("")}
+
 </table>
 
-<!-- FOOTER -->
-<table class="footer">
+<!-- ================= FOOTER ================= -->
+<table>
 <tr>
-<td width="40%"><b>References:</b><br/>${fir.references || ''}</td>
-<td width="30%"><b>Final Result:</b><br/>${fir.finalResult || ''}</td>
-<td width="30%" class="signature">
-${fir.inspectorName || ''}<br/>
-<small>${fir.inspectorDesignation || ''}</small>
-</td>
+  <td style="width:40%">
+    <span class="bold">References:</span><br/>
+    ${fir.references || ""}
+  </td>
+  <td class="center bold" style="width:30%">
+    Final Result:<br/>
+    ${fir.finalResult || ""}
+  </td>
+  <td class="center" style="width:30%">
+    ${fir.inspectorName || ""}<br/>
+    ${fir.inspectorDesignation || ""}
+  </td>
 </tr>
 </table>
 
-</div>
 </body>
 </html>
 `;
 
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
     const pdf = await page.pdf({
-      format: 'A4',
+      format: "A4",
       landscape: true,
-      printBackground: true
+      printBackground: true,
+      margin: { top: "10mm", bottom: "10mm", left: "10mm", right: "10mm" }
     });
 
     await browser.close();
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'inline; filename="FIR.pdf"');
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "inline; filename=FIR.pdf");
     res.send(pdf);
 
   } catch (err) {
-    console.error(err);
+    console.error("PDF ERROR:", err);
     if (browser) await browser.close();
-    res.status(500).json({ message: 'PDF generation failed', details: err.message });
+    res.status(500).json({ message: "PDF generation failed", details: err.message });
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+/* ===============================
+   START SERVER
+================================ */
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`FIR PDF service running on port ${PORT}`);
 });
