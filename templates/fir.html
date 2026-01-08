@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+{{CSS}}
+</head>
+
+<body>
+<script>
+const data = {{DATA}};
+</script>
+
+<div class="page">
+
+  <div class="header">
+    <div class="company">
+      <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
+      <p>Suite 4A, 2/5 Sarat Bose Road, 4th Floor, Kolkata – 700020</p>
+    </div>
+    <div class="title">FINAL INSPECTION REPORT</div>
+  </div>
+
+  <table class="meta">
+    <tr>
+      <td>Client</td><td>${data.clientName}</td>
+      <td>FIR No.</td><td>${data.firNumber}</td>
+      <td>Date</td><td>${data.firDate}</td>
+    </tr>
+  </table>
+
+  <table class="items">
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th>Item Description</th>
+        <th>Qty Offered</th>
+        <th>Qty Accepted</th>
+        <th>Qty Rejected</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${data.items.map((i, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${i.description}</td>
+        <td>${i.offered}</td>
+        <td>${i.accepted}</td>
+        <td>${i.rejected}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table>
+
+  <table class="tests">
+    <thead>
+      <tr>
+        <th>Inspection / Tests Conducted</th>
+        <th>Observations</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${data.tests.map(t => `
+      <tr>
+        <td>${t.test}</td>
+        <td>${t.observation}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table>
+
+  <div class="result">
+    Final Result: <strong>${data.finalResult}</strong>
+  </div>
+
+  <div class="signature">
+    Inspection Engineer: ${data.inspectorName}
+  </div>
+
+</div>
+</body>
+</html>
