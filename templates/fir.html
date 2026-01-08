@@ -1,79 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-{{CSS}}
+  <meta charset="UTF-8" />
+  <title>FINAL INSPECTION REPORT</title>
+  <link rel="stylesheet" href="../styles/fir.css" />
 </head>
 
 <body>
-<script>
-const data = {{DATA}};
-</script>
 
-<div class="page">
+<!-- ================= HEADER ================= -->
+<table class="header">
+  <tr>
+    <td class="logo">
+      <img src="{{LOGO_BASE64}}" />
+    </td>
+    <td class="company">
+      <div class="company-name">S. K. SAMANTA & CO. (P) LTD.</div>
+      <div class="company-address">
+        Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata – 700020
+      </div>
+    </td>
+    <td class="title">
+      FINAL INSPECTION REPORT
+    </td>
+  </tr>
+</table>
 
-  <div class="header">
-    <div class="company">
-      <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
-      <p>Suite 4A, 2/5 Sarat Bose Road, 4th Floor, Kolkata – 700020</p>
-    </div>
-    <div class="title">FINAL INSPECTION REPORT</div>
-  </div>
+<!-- ================= META DETAILS ================= -->
+<table class="meta">
+  <tr>
+    <td><strong>Client</strong></td><td>{{clientName}}</td>
+    <td><strong>FIR No</strong></td><td>{{firNumber}}</td>
+  </tr>
+  <tr>
+    <td><strong>Vendor</strong></td><td>{{vendorName}}</td>
+    <td><strong>PO No</strong></td><td>{{poNumber}}</td>
+  </tr>
+  <tr>
+    <td><strong>Sub Vendor</strong></td><td>{{subVendor}}</td>
+    <td><strong>ITP No</strong></td><td>{{itpNumber}}</td>
+  </tr>
+  <tr>
+    <td><strong>Date of Inspection</strong></td><td>{{inspectionDate}}</td>
+    <td><strong>Job No</strong></td><td>{{jobNumber}}</td>
+  </tr>
+</table>
 
-  <table class="meta">
-    <tr>
-      <td>Client</td><td>${data.clientName}</td>
-      <td>FIR No.</td><td>${data.firNumber}</td>
-      <td>Date</td><td>${data.firDate}</td>
-    </tr>
-  </table>
+<!-- ================= MAIN CONTENT ================= -->
+<table class="content">
+<tr>
 
-  <table class="items">
-    <thead>
-      <tr>
-        <th>Sl</th>
-        <th>Item Description</th>
-        <th>Qty Offered</th>
-        <th>Qty Accepted</th>
-        <th>Qty Rejected</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${data.items.map((i, idx) => `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${i.description}</td>
-        <td>${i.offered}</td>
-        <td>${i.accepted}</td>
-        <td>${i.rejected}</td>
-      </tr>`).join("")}
-    </tbody>
-  </table>
+<!-- LEFT TABLE -->
+<td class="left">
 
-  <table class="tests">
-    <thead>
-      <tr>
-        <th>Inspection / Tests Conducted</th>
-        <th>Observations</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${data.tests.map(t => `
-      <tr>
-        <td>${t.test}</td>
-        <td>${t.observation}</td>
-      </tr>`).join("")}
-    </tbody>
-  </table>
+<table class="items">
+  <tr>
+    <th>Sl No</th>
+    <th>Item Description<br><span>Drg No / Spec</span></th>
+    <th>Offered</th>
+    <th>Accepted</th>
+    <th>Rejected</th>
+  </tr>
 
-  <div class="result">
-    Final Result: <strong>${data.finalResult}</strong>
-  </div>
+  {{#items}}
+  <tr>
+    <td>{{sl}}</td>
+    <td>{{description}}</td>
+    <td>{{offered}}</td>
+    <td>{{accepted}}</td>
+    <td>{{rejected}}</td>
+  </tr>
+  {{/items}}
 
-  <div class="signature">
-    Inspection Engineer: ${data.inspectorName}
-  </div>
+</table>
 
-</div>
+</td>
+
+<!-- RIGHT TABLE -->
+<td class="right">
+
+<table class="tests">
+  <tr>
+    <th>Inspection / Tests Conducted</th>
+    <th>Observations</th>
+  </tr>
+
+  {{#tests}}
+  <tr>
+    <td>{{test}}</td>
+    <td>{{observation}}</td>
+  </tr>
+  {{/tests}}
+
+</table>
+
+</td>
+</tr>
+</table>
+
+<!-- ================= FOOTER ================= -->
+<table class="footer">
+<tr>
+  <td class="refs">
+    <strong>References:</strong><br/>
+    {{references}}
+  </td>
+  <td class="result">
+    <strong>Final Result:</strong><br/>
+    <span class="accepted">{{finalResult}}</span>
+  </td>
+  <td class="sign">
+    <div class="sign-box"></div>
+    <div class="sign-name">{{inspectorName}}</div>
+    <div class="sign-desg">{{inspectorDesignation}}</div>
+  </td>
+</tr>
+</table>
+
 </body>
 </html>
