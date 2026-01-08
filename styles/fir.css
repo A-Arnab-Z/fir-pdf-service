@@ -1,92 +1,107 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
-  margin: 12px;
-  color: #000;
+  margin: 0;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #000;
-  padding: 4px;
-  vertical-align: top;
+.page {
+  padding: 10mm;
 }
 
 /* HEADER */
-.header td {
-  border: none;
+.header {
+  width: 100%;
+  border: 2px solid #000;
+  border-collapse: collapse;
+  margin-bottom: 4px;
 }
 
-.logo img {
-  width: 70px;
+.header td {
+  border: 1px solid #000;
+  padding: 4px;
+}
+
+.logo {
+  width: 60px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .company {
   text-align: center;
 }
 
-.company-name {
-  color: #0047ab;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.company-address {
-  font-size: 10px;
-}
-
-.title {
-  text-align: right;
-  font-weight: bold;
+.company .name {
+  color: #003399;
   font-size: 14px;
-  color: #0047ab;
+  font-weight: bold;
+}
+
+.report-title {
+  width: 180px;
+  text-align: center;
+  color: #003399;
+  font-weight: bold;
 }
 
 /* META */
-.meta td {
-  width: 25%;
+.meta {
+  width: 100%;
+  border: 2px solid #000;
+  border-collapse: collapse;
+  margin-bottom: 4px;
 }
 
-/* CONTENT */
-.content td {
+.meta td {
+  border: 1px solid #000;
+  padding: 3px;
+}
+
+/* MAIN */
+.main {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main td {
   vertical-align: top;
 }
 
-.left { width: 60%; }
-.right { width: 40%; }
-
-.items th span {
-  font-size: 9px;
-  font-weight: normal;
+/* ITEMS */
+.items table,
+.tests table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
+.items th,
+.items td,
+.tests th,
+.tests td {
+  border: 1px solid #000;
+  padding: 3px;
+}
+
+.items th,
 .tests th {
-  text-align: center;
+  background: #f5f5f5;
 }
 
 /* FOOTER */
+.footer {
+  width: 100%;
+  border: 2px solid #000;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+
 .footer td {
-  height: 80px;
-}
-
-.accepted {
-  font-weight: bold;
-}
-
-.sign-box {
+  border: 1px solid #000;
+  padding: 6px;
   height: 50px;
 }
 
-.sign-name {
-  font-weight: bold;
+.signature {
   text-align: center;
-}
-
-.sign-desg {
-  font-size: 10px;
-  text-align: center;
+  vertical-align: bottom;
 }
