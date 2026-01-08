@@ -11,7 +11,6 @@ app.get('/', (_, res) => {
   res.send('FIR PDF Service OK');
 });
 
-/* PDF generation */
 app.post('/generate-fir-pdf', async (req, res) => {
   let browser;
 
@@ -23,24 +22,25 @@ app.post('/generate-fir-pdf', async (req, res) => {
 
     browser = await puppeteer.launch({
       headless: 'new',
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
       args: [
         '--no-sandbox',
-        '--disable-setuid-sandbox'
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
       ]
     });
 
     const page = await browser.newPage();
 
-    const html = `
+    await page.setContent(`
       <html>
         <body>
           <h1>FINAL INSPECTION REPORT</h1>
           <p>Client: ${fir.clientName || ''}</p>
         </body>
       </html>
-    `;
-
-    await page.setContent(html, { waitUntil: 'load' });
+    `);
 
     const pdf = await page.pdf({
       format: 'A4',
