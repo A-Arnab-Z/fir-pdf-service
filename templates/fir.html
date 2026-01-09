@@ -1,87 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>FINAL INSPECTION REPORT</title>
-{{CSS}}
+<meta charset="utf-8"/>
+{{STYLE}}
 </head>
 
 <body>
 <div class="page">
 
-<!-- HEADER -->
-<table class="header">
-<tr>
-<td class="logo">
-<img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
-</td>
-<td class="company">
-<b>S. K. SAMANTA & CO. (P) LTD.</b><br>
-Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020
-</td>
-<td class="title">FINAL INSPECTION REPORT</td>
-</tr>
-</table>
+  <div class="border">
 
-<!-- INFO -->
-<table class="info">
-<tr>
-<th>CLIENT</th><td>{{CLIENT}}</td>
-<th>FIR No.</th><td>{{FIR_NO}}</td>
-</tr>
-<tr>
-<th>VENDOR</th><td>{{VENDOR}}</td>
-<th>PO No.</th><td>{{PO_NO}}</td>
-</tr>
-<tr>
-<th>SUB-VENDOR</th><td>{{SUB_VENDOR}}</td>
-<th>ITP No.</th><td>{{ITP_NO}}</td>
-</tr>
-<tr>
-<th>DATE OF INSPECTION</th><td>{{DATE}}</td>
-<th>PROJECT</th><td>{{PROJECT}}</td>
-</tr>
-</table>
+    <!-- HEADER -->
+    <table class="header">
+      <tr>
+        <td class="logo">
+          <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+        </td>
+        <td class="company">
+          <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
+          <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
+        </td>
+        <td class="title">FINAL INSPECTION REPORT</td>
+      </tr>
+    </table>
 
-<!-- ITEMS -->
-<table class="main">
-<thead>
-<tr>
-<th class="sl">Sl</th>
-<th class="desc">ITEM DESCRIPTION<br>Drg No / Spec</th>
-<th class="qty">Offered</th>
-<th class="qty">Accepted</th>
-<th class="qty">Rejected</th>
-</tr>
-</thead>
-<tbody>
-{{ITEM_ROWS}}
-</tbody>
-</table>
+    <!-- INFO -->
+    <table class="info">
+      <tr><th>CLIENT</th><td>{{CLIENT}}</td><th>FIR No.</th><td>{{FIR_NO}}</td></tr>
+      <tr><th>VENDOR</th><td>{{VENDOR}}</td><th>PO No.</th><td>{{PO_NO}}</td></tr>
+      <tr><th>SUB-VENDOR</th><td>{{SUB_VENDOR}}</td><th>ITP No.</th><td>{{ITP_NO}}</td></tr>
+      <tr><th>DATE OF INSPECTION</th><td>{{DATE}}</td><th>PROJECT</th><td>{{PROJECT}}</td></tr>
+    </table>
 
-<!-- TESTS & OBS -->
-<table class="tests">
-<tr>
-<th>Inspection / Tests Conducted</th>
-<th>OBSERVATIONS</th>
-</tr>
-<tr>
-<td>{{INSPECTION_TESTS}}</td>
-<td>{{OBSERVATIONS}}</td>
-</tr>
-</table>
+    <!-- ITEMS -->
+    <table class="items">
+      <thead>
+        <tr>
+          <th>Sl</th>
+          <th>ITEM DESCRIPTION<br/>Drg No / Spec</th>
+          <th>Offered</th>
+          <th>Accepted</th>
+          <th>Rejected</th>
+          <th>Inspection Tests</th>
+          <th>OBSERVATIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ITEM_ROWS}}
+      </tbody>
+    </table>
 
-<!-- FOOTER -->
-<table class="footer">
-<tr>
-<td>Remarks: <b>{{FINAL_RESULT}}</b></td>
-<td class="sign">
-<b>{{INSPECTOR}}</b><br>
-Inspection Engineer
-</td>
-</tr>
-</table>
+    <!-- FOOTER -->
+    <table class="footer">
+      <tr>
+        <td>Remarks:<br/><b>{{REMARKS}}</b></td>
+        <td class="sign">
+          <b>{{INSPECTOR}}</b><br/>
+          Inspection Engineer
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="vendor">VENDOR / SUB-VENDOR</td>
+      </tr>
+    </table>
 
+  </div>
 </div>
 </body>
 </html>
