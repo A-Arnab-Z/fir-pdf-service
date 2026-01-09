@@ -1,69 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/>
-{{STYLE}}
+<meta charset="UTF-8">
+{{INLINE_CSS}}
 </head>
-
 <body>
 <div class="page">
+  <div class="header">
+    <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+    <div>
+      <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
+      <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
+    </div>
+    <h2>FINAL INSPECTION REPORT</h2>
+  </div>
 
-  <div class="border">
+  <table class="meta">
+    <tr><td>CLIENT</td><td>{{CLIENT}}</td><td>FIR No</td><td>{{FIR_NO}}</td></tr>
+    <tr><td>VENDOR</td><td>{{VENDOR}}</td><td>PO No</td><td>{{PO_NO}}</td></tr>
+    <tr><td>SUB VENDOR</td><td>{{SUB_VENDOR}}</td><td>ITP No</td><td>{{ITP_NO}}</td></tr>
+    <tr><td>DATE OF INSPECTION</td><td>{{DATE_INSPECTION}}</td><td>PROJECT</td><td>{{PROJECT}}</td></tr>
+  </table>
 
-    <!-- HEADER -->
-    <table class="header">
-      <tr>
-        <td class="logo">
-          <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
-        </td>
-        <td class="company">
-          <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
-          <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
-        </td>
-        <td class="title">FINAL INSPECTION REPORT</td>
-      </tr>
-    </table>
+  <table class="main">
+    <tr>
+      <th>Sl</th>
+      <th>Item Description</th>
+      <th>Offered</th>
+      <th>Accepted</th>
+      <th>Rejected</th>
+      <th>Inspection Tests</th>
+      <th>Observations</th>
+    </tr>
+    {{ITEM_ROWS}}
+  </table>
 
-    <!-- INFO -->
-    <table class="info">
-      <tr><th>CLIENT</th><td>{{CLIENT}}</td><th>FIR No.</th><td>{{FIR_NO}}</td></tr>
-      <tr><th>VENDOR</th><td>{{VENDOR}}</td><th>PO No.</th><td>{{PO_NO}}</td></tr>
-      <tr><th>SUB-VENDOR</th><td>{{SUB_VENDOR}}</td><th>ITP No.</th><td>{{ITP_NO}}</td></tr>
-      <tr><th>DATE OF INSPECTION</th><td>{{DATE}}</td><th>PROJECT</th><td>{{PROJECT}}</td></tr>
-    </table>
-
-    <!-- ITEMS -->
-    <table class="items">
-      <thead>
-        <tr>
-          <th>Sl</th>
-          <th>ITEM DESCRIPTION<br/>Drg No / Spec</th>
-          <th>Offered</th>
-          <th>Accepted</th>
-          <th>Rejected</th>
-          <th>Inspection Tests</th>
-          <th>OBSERVATIONS</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{ITEM_ROWS}}
-      </tbody>
-    </table>
-
-    <!-- FOOTER -->
-    <table class="footer">
-      <tr>
-        <td>Remarks:<br/><b>{{REMARKS}}</b></td>
-        <td class="sign">
-          <b>{{INSPECTOR}}</b><br/>
-          Inspection Engineer
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" class="vendor">VENDOR / SUB-VENDOR</td>
-      </tr>
-    </table>
-
+  <div class="footer">
+    <div>Remarks: {{REMARKS}}</div>
+    <div>
+      <strong>{{INSPECTOR}}</strong><br>
+      Inspection Engineer
+    </div>
   </div>
 </div>
 </body>
