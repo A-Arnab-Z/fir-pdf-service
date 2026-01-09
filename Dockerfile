@@ -1,6 +1,5 @@
 FROM node:22-slim
 
-# Install Chromium dependencies
 RUN apt-get update && apt-get install -y \
   chromium \
   fonts-liberation \
