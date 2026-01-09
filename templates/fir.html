@@ -8,18 +8,93 @@
 <body>
 <div class="page">
 
-<div class="header">
-  <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png">
-  <div class="title">
-    <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
-    <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+    </div>
+
+    <div class="company">
+      <div class="name">S. K. SAMANTA & CO. (P) LTD.</div>
+      <div class="address">
+        Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020
+      </div>
+    </div>
+
+    <div class="report-title">
+      FINAL INSPECTION REPORT
+    </div>
   </div>
-  <div class="report-title">FINAL INSPECTION REPORT</div>
-</div>
 
-<!-- tables here -->
+  <!-- INFO TABLE -->
+  <table class="info">
+    <tr>
+      <td><b>CLIENT</b></td>
+      <td>{{CLIENT_NAME}}</td>
+      <td><b>FIR No.</b></td>
+      <td>{{FIR_NO}}</td>
+    </tr>
+    <tr>
+      <td><b>VENDOR</b></td>
+      <td>{{VENDOR_NAME}}</td>
+      <td><b>PO No.</b></td>
+      <td>{{PO_NO}}</td>
+    </tr>
+    <tr>
+      <td><b>SUB-VENDOR</b></td>
+      <td>{{SUB_VENDOR}}</td>
+      <td><b>ITP No.</b></td>
+      <td>{{ITP_NO}}</td>
+    </tr>
+    <tr>
+      <td><b>DATE OF INSPECTION</b></td>
+      <td>{{INSPECTION_DATE}}</td>
+      <td><b>PROJECT</b></td>
+      <td>{{PROJECT_NAME}}</td>
+    </tr>
+  </table>
 
-{{ITEM_ROWS}}
+  <!-- MAIN TABLE -->
+  <table class="main">
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th>ITEM DESCRIPTION<br>Drg No / Spec</th>
+        <th>Offered</th>
+        <th>Accepted</th>
+        <th>Rejected</th>
+        <th>Inspection Tests</th>
+        <th>OBSERVATIONS</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{ITEM_ROWS}}
+    </tbody>
+  </table>
+
+  <!-- FOOTER -->
+  <table class="footer">
+    <tr>
+      <td class="ref">
+        <b>References:</b><br>
+        SKSL Approved Drg. No.
+      </td>
+
+      <td class="result">
+        <b>Remarks:</b><br>
+        ACCEPTED
+      </td>
+
+      <td class="sign">
+        <div class="sign-name">{{INSPECTOR_NAME}}</div>
+        <div class="sign-title">Inspection Engineer</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" class="vendor">VENDOR / SUB-VENDOR</td>
+    </tr>
+  </table>
 
 </div>
 </body>
