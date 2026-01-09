@@ -2,12 +2,12 @@
   "name": "fir-pdf-service",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.19.2",
-    "puppeteer": "^22.8.2"
+    "puppeteer-core": "^23.7.1"
   }
 }
