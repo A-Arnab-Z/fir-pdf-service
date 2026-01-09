@@ -1,86 +1,87 @@
-import express from "express";
-import puppeteer from "puppeteer-core";
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
+import puppeteer from 'puppeteer-core';
 
 const app = express();
-app.use(express.json({ limit: "20mb" }));
+app.use(express.json({ limit: '20mb' }));
 
 const PORT = process.env.PORT || 8080;
 
-/* Health check */
-app.get("/", (_, res) => {
-  res.send("FIR PDF Service OK");
-});
+app.get('/', (_, res) => res.send('FIR PDF Service OK'));
 
-app.post("/generate-fir-pdf", async (req, res) => {
+app.post('/generate-fir-pdf', async (req, res) => {
   let browser;
+
   try {
-    const fir = req.body;
+    const data = req.body;
+    const template = fs.readFileSync(
+      path.join(process.cwd(), 'fir-template.html'),
+      'utf8'
+    );
 
-    // Load HTML template
-    const templatePath = path.join(process.cwd(), "templates", "fir.html");
-    let html = fs.readFileSync(templatePath, "utf8");
+    const inspectionTests = data.tests
+      .map(t => `<p>${t.test}</p>`)
+      .join('');
 
-    // Replace placeholders
-    html = html
-      .replace(/{{CLIENT_NAME}}/g, fir.clientName || "")
-      .replace(/{{PROJECT_NAME}}/g, fir.projectName || "")
-      .replace(/{{VENDOR_NAME}}/g, fir.vendorName || "")
-      .replace(/{{FIR_NO}}/g, fir.firNumber || "")
-      .replace(/{{DATE_OF_INSPECTION}}/g, fir.dateOfInspection || "")
-      .replace(/{{PO_NO}}/g, fir.poNumber || "")
-      .replace(/{{ITP_NO}}/g, fir.itpNumber || "")
-      .replace(/{{FINAL_RESULT}}/g, fir.finalResult || "")
-      .replace(/{{INSPECTOR_NAME}}/g, fir.inspectorName || "")
-      .replace(/{{DRAWING_REFS}}/g, fir.approvedDrawings || "");
+    const observations = data.tests
+      .map(t => `<p>${t.observation}</p>`)
+      .join('');
 
-    // Items rows
-    const itemsHtml = (fir.items || [])
-      .map((item, i) => `
-<tr>
-  <td class="center">${String(i + 1).padStart(2, "0")}</td>
-  <td>${item.description}</td>
-  <td class="center">${item.qtyOffered}</td>
-  <td class="center">${item.qtyAccepted}</td>
-  <td class="center">${item.qtyRejected || "Nil"}</td>
-  <td class="center">1–9</td>
-  <td>
-    ${(fir.tests || [])
-      .map((t, idx) => `<div>${idx + 1}. ${t.observation}</div>`)
-      .join("")}
-  </td>
-</tr>
-`)
-      .join("");
+    const itemRows = data.items.map((item, i) => `
+      <tr>
+        <td class="center">${i + 1}</td>
+        <td>${item.description}</td>
+        <td class="center">${item.qtyOffered}</td>
+        <td class="center">${item.qtyAccepted}</td>
+        <td class="center">${item.qtyRejected || 'Nil'}</td>
+        <td>${inspectionTests}</td>
+        <td class="observations">${observations}</td>
+      </tr>
+    `).join('');
 
-    html = html.replace("{{ITEM_ROWS}}", itemsHtml);
+    const html = template
+      .replace('{{LOGO_URL}}', data.logoUrl)
+      .replace('{{clientName}}', data.clientName)
+      .replace('{{vendorName}}', data.vendorName)
+      .replace('{{subVendor}}', data.subVendor || '')
+      .replace('{{projectName}}', data.projectName)
+      .replace('{{firNumber}}', data.firNumber)
+      .replace('{{poNumber}}', data.poNumber)
+      .replace('{{itpNumber}}', data.itpNumber)
+      .replace('{{inspectionDate}}', data.inspectionDate)
+      .replace('{{approvedDrawings}}', data.approvedDrawings || '')
+      .replace('{{finalResult}}', data.finalResult)
+      .replace('{{inspectorName}}', data.inspectorName)
+      .replace('{{inspectorStamp}}', data.inspectorStamp || '')
+      .replace('{{ITEM_ROWS}}', itemRows);
 
     browser = await puppeteer.launch({
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true,
+      args: ['--no-sandbox']
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.setContent(html, { waitUntil: 'networkidle0' });
 
     const pdf = await page.pdf({
-      format: "A4",
+      format: 'A4',
       landscape: true,
-      printBackground: true,
+      printBackground: true
     });
 
     await browser.close();
 
-    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader('Content-Type', 'application/pdf');
     res.send(pdf);
+
   } catch (err) {
     if (browser) await browser.close();
-    res.status(500).json({ message: "PDF generation failed", error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`FIR PDF service running on port ${PORT}`);
-});
+app.listen(PORT, '0.0.0.0', () =>
+  console.log(`FIR PDF service running on ${PORT}`)
+);
