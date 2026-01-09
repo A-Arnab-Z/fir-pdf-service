@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-{{INLINE_CSS}}
+  <meta charset="UTF-8" />
+  {{CSS}}
 </head>
 <body>
+
 <div class="page">
   <div class="header">
-    <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
-    <div>
+    <img class="logo" src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png" />
+    <div class="company">
       <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
       <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
     </div>
-    <h2>FINAL INSPECTION REPORT</h2>
+    <div class="title">FINAL INSPECTION REPORT</div>
   </div>
 
-  <table class="meta">
-    <tr><td>CLIENT</td><td>{{CLIENT}}</td><td>FIR No</td><td>{{FIR_NO}}</td></tr>
-    <tr><td>VENDOR</td><td>{{VENDOR}}</td><td>PO No</td><td>{{PO_NO}}</td></tr>
-    <tr><td>SUB VENDOR</td><td>{{SUB_VENDOR}}</td><td>ITP No</td><td>{{ITP_NO}}</td></tr>
-    <tr><td>DATE OF INSPECTION</td><td>{{DATE_INSPECTION}}</td><td>PROJECT</td><td>{{PROJECT}}</td></tr>
+  <table class="info">
+    <tr><td>CLIENT</td><td>{{CLIENT_NAME}}</td><td>FIR No.</td><td>{{FIR_NO}}</td></tr>
+    <tr><td>VENDOR</td><td>{{VENDOR_NAME}}</td><td>PO No.</td><td>{{PO_NO}}</td></tr>
+    <tr><td>SUB-VENDOR</td><td>{{SUB_VENDOR}}</td><td>ITP No.</td><td>{{ITP_NO}}</td></tr>
+    <tr><td>DATE OF INSPECTION</td><td>{{DATE_OF_INSPECTION}}</td><td>PROJECT</td><td>{{PROJECT}}</td></tr>
   </table>
 
   <table class="main">
-    <tr>
-      <th>Sl</th>
-      <th>Item Description</th>
-      <th>Offered</th>
-      <th>Accepted</th>
-      <th>Rejected</th>
-      <th>Inspection Tests</th>
-      <th>Observations</th>
-    </tr>
-    {{ITEM_ROWS}}
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th>ITEM DESCRIPTION</th>
+        <th>Offered</th>
+        <th>Accepted</th>
+        <th>Rejected</th>
+        <th>Inspection Tests</th>
+        <th>Observations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ITEM_ROWS}}
+    </tbody>
   </table>
 
   <div class="footer">
-    <div>Remarks: {{REMARKS}}</div>
-    <div>
-      <strong>{{INSPECTOR}}</strong><br>
+    <div>Remarks: <strong>{{FINAL_RESULT}}</strong></div>
+    <div class="sign">
+      <strong>{{INSPECTOR_NAME}}</strong><br/>
       Inspection Engineer
     </div>
   </div>
 </div>
+
 </body>
 </html>
