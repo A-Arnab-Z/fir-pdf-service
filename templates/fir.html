@@ -1,172 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Final Inspection Report</title>
-
-  <style>
-    @page {
-      size: A4 landscape;
-      margin: 12mm;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 8.5pt;
-      color: #000;
-    }
-
-    .page {
-      border: 3px solid #000;
-      padding: 4px;
-    }
-
-    .inner {
-      border: 1px solid #000;
-      padding: 6px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      border: 1px solid #000;
-      padding: 3px;
-      vertical-align: top;
-    }
-
-    th {
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .center { text-align: center; }
-    .right  { text-align: right; }
-    .bold   { font-weight: bold; }
-
-    .header-title {
-      font-size: 15pt;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .subtitle {
-      font-size: 9pt;
-      text-align: center;
-    }
-
-    .logo {
-      width: 55px;
-    }
-
-    .observations p {
-      margin: 2px 0;
-      text-align: justify;
-    }
-
-    .footer {
-      height: 60px;
-    }
-
-    tr { page-break-inside: avoid; }
-  </style>
+  <meta charset="utf-8">
+  <title>FINAL INSPECTION REPORT</title>
 </head>
 
 <body>
 <div class="page">
-<div class="inner">
 
-<!-- ================= HEADER ================= -->
-<table>
-  <tr>
-    <td style="width:8%" class="center">
-      <img class="logo" src="{{LOGO_URL}}" />
-    </td>
-
-    <td style="width:72%">
-      <div class="header-title">S. K. SAMANTA & CO. (P) LTD.</div>
-      <div class="subtitle">
-        Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata – 700020
-      </div>
-    </td>
-
-    <td style="width:20%" class="center bold">
-      FINAL INSPECTION REPORT
-    </td>
-  </tr>
-</table>
-
-<!-- ================= INFO GRID ================= -->
-<table>
-  <tr>
-    <td class="bold">CLIENT</td>
-    <td>{{clientName}}</td>
-    <td class="bold">FIR No.</td>
-    <td>{{firNumber}}</td>
-  </tr>
-  <tr>
-    <td class="bold">VENDOR</td>
-    <td>{{vendorName}}</td>
-    <td class="bold">PO No.</td>
-    <td>{{poNumber}}</td>
-  </tr>
-  <tr>
-    <td class="bold">SUB-VENDOR</td>
-    <td>{{subVendor}}</td>
-    <td class="bold">ITP No.</td>
-    <td>{{itpNumber}}</td>
-  </tr>
-  <tr>
-    <td class="bold">DATE OF INSPECTION</td>
-    <td>{{inspectionDate}}</td>
-    <td class="bold">PROJECT</td>
-    <td>{{projectName}}</td>
-  </tr>
-</table>
-
-<!-- ================= MAIN TABLE ================= -->
-<table>
-  <tr>
-    <th style="width:3%">Sl</th>
-    <th style="width:32%">ITEM DESCRIPTION<br/>Drg No / Spec</th>
-    <th style="width:6%">Offered</th>
-    <th style="width:6%">Accepted</th>
-    <th style="width:6%">Rejected</th>
-    <th style="width:15%">Inspection / Tests Conducted</th>
-    <th style="width:32%">OBSERVATIONS</th>
-  </tr>
-
-  {{ITEM_ROWS}}
-</table>
-
-<!-- ================= FOOTER ================= -->
-<table class="footer">
-  <tr>
-    <td style="width:40%">
-      <b>SKSL Approved Drg. No.:</b><br/>
-      {{approvedDrawings}}
-    </td>
-
-    <td style="width:30%" class="center bold">
-      Remarks: {{finalResult}}
-    </td>
-
-    <td style="width:30%" class="center">
-      <img src="{{inspectorStamp}}" style="width:80px"><br/>
-      <b>{{inspectorName}}</b><br/>
-      Inspection Engineer
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" class="center bold">
-      VENDOR / SUB-VENDOR
-    </td>
-  </tr>
-</table>
-
+<div class="header">
+  <img src="https://ik.imagekit.io/v5ur9vgig/SKSL%20New%20Logo_BG%20RM.png">
+  <div class="title">
+    <h1>S. K. SAMANTA & CO. (P) LTD.</h1>
+    <p>Suite 4A, 2/5, Sarat Bose Road, 4th Floor, Kolkata - 700020</p>
+  </div>
+  <div class="report-title">FINAL INSPECTION REPORT</div>
 </div>
+
+<!-- tables here -->
+
+{{ITEM_ROWS}}
+
 </div>
 </body>
 </html>
